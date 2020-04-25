@@ -8,7 +8,7 @@ const Banner = () => (
         <h2>
           <div className="line">
             <span>
-              Digital Designer
+              I'm a Digital Designer
             </span>
           </div>
           <div className="line">
