@@ -25,7 +25,7 @@ const caseStudies = [
   {
     id: 3,
     subtitle: 'Lumin',
-    title: 'For your best look ever',
+    title: 'For your best look ever. Take great photographs.',
     img: 'lumin-min',
 
   },
