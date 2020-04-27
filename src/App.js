@@ -1,62 +1,85 @@
-import React, { useEffect } from 'react';
-import './styles/App.scss';
+/* eslint-disable prefer-rest-params */
+import React, { useEffect, useState } from 'react';
+import { Route } from 'react-router-dom';
+// eslint-disable-next-line import/no-unresolved
 import gsap from 'gsap';
+import './styles/App.scss';
+// components import
 import Header from './components/header';
-import Banner from './components/banner';
-import Cases from './components/cases';
-import Intro from './components/intro';
+import Navigation from './components/navigation';
+
+
+// Pages components
+import Home from './pages/home';
+import About from './pages/about';
+import Contact from './pages/contact';
+import Work from './pages/work';
+
+
+// routes
+const routes = [
+  { path: '/', name: 'Home', Component: Home },
+  { path: '/about-me', name: 'About me', Component: About },
+  { path: '/work', name: 'Work', Component: Work },
+  { path: '/contact', name: 'Contact', Component: Contact },
+
+];
+
+function debounce(fn, ms) {
+  let timer;
+  return () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      timer = null;
+      fn.apply(this, arguments);
+    }, ms);
+  };
+}
 
 function App() {
+  // Prevents flashing before the Dom loads
+  gsap.to('body', 0, { css: { visibility: 'visible' } });
+
+  const [Dimensions, setDimensions] = useState({
+    height: window.innerHeight,
+    width: window.innerWidth,
+  });
+
   useEffect(() => {
-    const vh = window.innerHeight * 0.01;
+    const vh = Dimensions.height * 0.01;
     document.documentElement.style.setProperty('--vh', `${vh}px`);
 
-    // Prevents flashing before the Dom loads
-    gsap.to('body', 0, { css: { visibility: 'visible' } });
 
-    // GSAP timeline
-    const tl = gsap.timeline();
-    tl.from('.line span', 1.8,
-      {
-        y: 100,
-        ease: 'power4.out',
-        delay: 1,
-        skewY: 7,
-        stagger: {
-          amount: 0.3,
-        },
-
-      }).to('.overlay-top', 1.6, {
-      height: 0,
-      ease: 'expo.inOut',
-      stagger: 0.4,
-    }).to('.overlay-bottom', 1.6, {
-      width: 0,
-      ease: 'expo.inOut',
-      delay: -0.8,
-      stagger: {
-        amount: 0.4,
-      },
-    }).to('.intro-overlay', 0, { css: { display: 'none' } })
-      .from('.case-image img', 1.6, {
-        scale: 1.4,
-        ease: 'expo.inOut',
-        delay: -2,
-        stagger: {
-          amount: 0.4,
-        },
+    // eslint-disable-next-line prefer-arrow-callback
+    const debouncedHandleResize = debounce(function HandleResize() {
+      setDimensions({
+        height: window.innerHeight,
+        width: window.innerWidth,
       });
-  }, []);
+    }, 1000);
 
+    window.addEventListener('resize', debouncedHandleResize);
+
+    return () => {
+      window.removeEventListener('resize', debouncedHandleResize);
+    };
+  });
 
   return (
+
     // eslint-disable-next-line react/jsx-filename-extension
-    <div className="App">
-      <Intro />
+    <>
+
       <Header />
-      <Banner />
-      <Cases />
-    </div>
+      <div className="App">
+        {routes.map(({ path, Component }) => (
+          <Route key={path} exact path={path}>
+            <Component />
+          </Route>
+        ))}
+      </div>
+      <Navigation />
+    </>
   );
 }
 
