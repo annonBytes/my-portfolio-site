@@ -70,7 +70,7 @@ function App() {
     // eslint-disable-next-line react/jsx-filename-extension
     <>
 
-      <Header />
+      <Header dimensions={Dimensions} />
       <div className="App">
         {routes.map(({ path, Component }) => (
           <Route key={path} exact path={path}>
